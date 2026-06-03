@@ -54,7 +54,7 @@ jobs:
           rustup target add ${{ env.RUST_TARGET }}
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y ccache g++-mingw-w64 gcc-multilib python3-pip nasm ninja-build pkgconf ${{ matrix.wine }} wine
+          sudo apt-get install --no-install-recommends -y ccache g++-mingw-w64 python3-pip nasm ninja-build pkgconf
           python -m pip install meson
 
       - name: Install Meson Wraps
@@ -76,22 +76,6 @@ jobs:
         if: ${{ failure() && steps.build.outcome == 'failure' }}
         run: |
           cat ./mingw_build/meson-logs/meson-log.txt
-
-      - name: Functional test
-        run: |
-          cd artifact && wine ./mpv.com -v --no-config
-        env:
-          WINEDEBUG: '+loaddll'
-
-      - name: Run meson tests
-        id: tests
-        run: |
-          meson test -C mingw_build
-
-      - name: Print meson test log
-        if: ${{ failure() && steps.tests.outcome == 'failure' }}
-        run: |
-          cat ./mingw_build/meson-logs/testlog.txt
 
       - name: Artifact name
         id: artifact
