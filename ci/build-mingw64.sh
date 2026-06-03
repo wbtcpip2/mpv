@@ -380,6 +380,7 @@ mpv_args=(
     -Dmujs:werror=false
     -Dmujs:default_library=static
     -Dlua=luajit
+    -Dlibmpv=true
     -D{amf,shaderc,spirv-cross,d3d11,javascript,libcurl}=enabled
 )
 meson setup $build "${mpv_args[@]}"
