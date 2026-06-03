@@ -37,7 +37,11 @@ jobs:
           
     steps:
       - uses: actions/checkout@v6
-
+      - name: Unshallow mpv repo
+        run: |
+          cd mpv
+          git fetch --unshallow || true
+          git fetch --tags
       - name: Get time
         id: get_time
         run: echo "timestamp=`date +%s%N`" >> $GITHUB_OUTPUT
