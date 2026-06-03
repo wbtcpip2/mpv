@@ -320,23 +320,6 @@ _libass () {
 }
 _libass_mark=lib/libass.dll.a
 
-_luajit () {
-    [ -d LuaJIT ] || $gitclone https://github.com/LuaJIT/LuaJIT.git
-    pushd LuaJIT
-    local hostcc="ccache cc"
-    local flags=
-    if [[ "$TARGET" == "i686-"* ]]; then
-        hostcc="$hostcc -m32"
-        flags=XCFLAGS=-DLUAJIT_NO_UNWIND
-    fi
-    make TARGET_SYS=Windows clean
-    make TARGET_SYS=Windows HOST_CC="$hostcc" CROSS="ccache $TARGET-" \
-        BUILDMODE=static $flags amalg
-    make DESTDIR="$prefix_dir" INSTALL_DEP= FILE_T=luajit.exe install
-    popd
-}
-_luajit_mark=lib/libluajit-5.1.a
-
 _subrandr () {
     build_subrandr "$prefix_dir" --target "$RUST_TARGET" -- -- -L"$prefix_dir"/lib
 }
@@ -360,7 +343,7 @@ if [[ "$TARGET" != "i686-"* ]]; then
     build_if_missing vulkan-headers
     build_if_missing vulkan-loader
 fi
-for x in ffmpeg libplacebo freetype fribidi harfbuzz libass luajit curl; do
+for x in ffmpeg libplacebo freetype fribidi harfbuzz libass curl; do
     build_if_missing $x
 done
 if [[ "$TARGET" != "i686-"* ]]; then
@@ -383,12 +366,10 @@ rm -rf $build
 mpv_args=(
     --cross-file "$prefix_dir/crossfile" $common_args
     --buildtype debugoptimized
-    --force-fallback-for=mujs
-    -Dmujs:werror=false
-    -Dmujs:default_library=static
-    -Dlua=luajit
+    -Djavascript=disabled
+    -Dlua=disabled
     -Dlibmpv=true
-    -D{amf,shaderc,spirv-cross,d3d11,javascript,libcurl}=enabled
+    -D{amf,shaderc,spirv-cross,d3d11,libcurl}=enabled
 )
 meson setup $build "${mpv_args[@]}"
 meson compile -C $build
