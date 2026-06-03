@@ -205,6 +205,13 @@ _ffmpeg () {
         --cc="$CC" --cxx="$CXX" $at_flags
         --disable-{doc,programs}
         --enable-muxer=spdif --enable-encoder=mjpeg,png --enable-libdav1d
+
+        --disable-cuda
+        --disable-cuvid
+        --disable-nvenc
+        --disable-nvdec
+        --disable-libnpp
+        --disable-filter=scale_cuda
     )
     pkg-config vulkan && args+=(--enable-vulkan --enable-libshaderc)
     ../configure "${args[@]}"
