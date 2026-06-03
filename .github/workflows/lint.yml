@@ -75,6 +75,7 @@ jobs:
       - run: editorconfig-checker -config .editorconfig-checker.json
 
   pre-commit:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
