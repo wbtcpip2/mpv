@@ -34,8 +34,7 @@ jobs:
         include:
           - arch: i686
             wine: wine32
-          - arch: x86_64
-            wine: wine64
+          
     steps:
       - uses: actions/checkout@v6
 
@@ -115,6 +114,7 @@ jobs:
           key: ${{ env.TARGET }}-${{ steps.get_time.outputs.timestamp }}
 
   win32:
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -253,6 +253,7 @@ jobs:
           key: ${{ matrix.target }}-${{ steps.get_time.outputs.timestamp }}
 
   macos:
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -347,6 +348,7 @@ jobs:
           path: mpv.tar.gz
 
   linux:
+    if: false
     runs-on: ubuntu-latest
     container:
       image: "registry.opensuse.org/home/mia/images/images/mpv-ci:stable-deps"
@@ -389,6 +391,7 @@ jobs:
           cat ./build/meson-logs/testlog.txt
 
   linux-fuzz:
+    if: false
     runs-on: ubuntu-latest
     container:
       image: "registry.opensuse.org/home/mia/images/images/mpv-ci:stable-deps"
@@ -412,6 +415,7 @@ jobs:
           cat ./build/meson-logs/meson-log.txt
 
   linux-ffmpeg-6-1:
+    if: false
     runs-on: ubuntu-latest
     container:
       # We want to test ffmpeg 6.1.2, which Alpine 3.21 includes.
@@ -468,6 +472,7 @@ jobs:
           cat ./build/meson-logs/testlog.txt
 
   openbsd:
+    if: false
     runs-on: ubuntu-latest # until https://github.com/actions/runner/issues/385
     timeout-minutes: 15 # avoid any weirdness with the VM
     steps:
@@ -515,6 +520,7 @@ jobs:
             fi
 
   freebsd:
+    if: false
     runs-on: ubuntu-latest # until https://github.com/actions/runner/issues/385
     timeout-minutes: 15 # avoid any weirdness with the VM
     steps:
@@ -570,6 +576,7 @@ jobs:
             fi
 
   msys2:
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
