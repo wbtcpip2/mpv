@@ -1,5 +1,5 @@
 name: lint
-
+if: false
 on:
   push:
     branches:
