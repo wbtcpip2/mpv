@@ -6,7 +6,7 @@ ln -snf . "$prefix_dir/usr"
 ln -snf . "$prefix_dir/local"
 
 wget="wget -nc --progress=bar:force"
-gitclone="git clone --depth=1 --recursive --shallow-submodules"
+gitclone="git clone --recursive --shallow-submodules"
 
 if [[ -z "$TARGET" || -z "$RUST_TARGET" ]]; then
     echo "Error: must set TARGET and RUST_TARGET" >&2
