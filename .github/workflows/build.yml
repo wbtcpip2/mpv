@@ -37,10 +37,10 @@ jobs:
           
     steps:
       - uses: actions/checkout@v6
-      - name: Unshallow mpv repo
+      - name: Clone mpv (full history + tags)
         run: |
+          git clone https://github.com/mpv-player/mpv.git --recursive
           cd mpv
-          git fetch --unshallow || true
           git fetch --tags
       - name: Get time
         id: get_time
