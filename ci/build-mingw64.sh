@@ -393,6 +393,7 @@ if [ "$2" = pack ]; then
 
     echo "Adding DLLs:"
     # grab everything we can get our hands on
+    cp -v $build/libmpv-*.dll artifact/tmp/
     cp -p "$prefix_dir/bin/"*.dll artifact/tmp/
     shopt -s nullglob
     for file in /usr/lib/gcc/$TARGET/*-posix/*.dll /usr/$TARGET/lib/*.dll; do
