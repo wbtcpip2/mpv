@@ -371,8 +371,11 @@ mpv_args=(
     -Dlibmpv=true
     -D{amf,shaderc,spirv-cross,d3d11,libcurl}=enabled
 )
-meson setup $build "${mpv_args[@]}"
-meson compile -C $build
+
+cd mpv
+meson setup ../$build "${mpv_args[@]}"
+meson compile -C ../$build
+cd ..
 
 if [ "$2" = pack ]; then
     mkdir -p artifact/tmp
