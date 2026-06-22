@@ -176,15 +176,15 @@ _dav1d () {
 }
 _dav1d_mark=lib/libdav1d.dll.a
 
-_lcms2 () {
-    [ -d lcms2 ] || $gitclone https://github.com/mm2/Little-CMS.git lcms2
-    builddir lcms2
-    meson setup .. --cross-file "$prefix_dir/crossfile" \
-        -Dtests=disabled -D{utils,versionedlibs}=false
-    makeplusinstall
-    popd
-}
-_lcms2_mark=lib/liblcms2.dll.a
+#_lcms2 () {
+#    [ -d lcms2 ] || $gitclone https://github.com/mm2/Little-CMS.git lcms2
+#    builddir lcms2
+#    meson setup .. --cross-file "$prefix_dir/crossfile" \
+#        -Dtests=disabled -D{utils,versionedlibs}=false
+#    makeplusinstall
+#    popd
+#}
+#_lcms2_mark=lib/liblcms2.dll.a
 
 _amf_headers () {
     local ver=1.5.2
@@ -336,7 +336,7 @@ _curl () {
 }
 _curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d lcms2; do
+for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d; do
     build_if_missing $x
 done
 if [[ "$TARGET" != "i686-"* ]]; then
@@ -400,7 +400,7 @@ if [ "$2" = pack ]; then
         av*.dll sw*.dll postproc-[0-9]*.dll
         # everything else
         subrandr-[0-9]*.dll lib{ass,freetype,fribidi,harfbuzz,iconv,placebo}-[0-9]*.dll
-        lib{curl,shaderc_shared,spirv-cross-c-shared,dav1d,lcms2,zlib1}.dll
+        lib{curl,shaderc_shared,spirv-cross-c-shared,dav1d,zlib1}.dll
         # mpv API
         libmpv-*.dll
     )
