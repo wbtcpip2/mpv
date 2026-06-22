@@ -370,7 +370,6 @@ mpv_args=(
     -Dlua=disabled
     -Dlibmpv=true
     -D{amf,shaderc,spirv-cross,d3d11,libcurl}=enabled
-    -Dlcms=disabled
 )
 
 cd mpv
