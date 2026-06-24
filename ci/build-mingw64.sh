@@ -213,11 +213,35 @@ _ffmpeg () {
         --disable-libnpp
         --disable-filter=scale_cuda
     )
+    pkg-config vulkan && args+=(--enable-vulkan --enable-libshaderc)
     ../configure "${args[@]}"
     makeplusinstall
     popd
 }
 _ffmpeg_mark=lib/libavcodec.dll.a
+
+_shaderc () {
+    if [ ! -d shaderc ]; then
+        $gitclone https://github.com/google/shaderc.git
+        (cd shaderc && ./utils/git-sync-deps)
+    fi
+    builddir shaderc
+    cmake .. "${cmake_args[@]}" \
+        -DBUILD_SHARED_LIBS=OFF -DSHADERC_SKIP_TESTS=ON
+    makeplusinstall
+    popd
+}
+_shaderc_mark=lib/libshaderc_shared.dll.a
+
+_spirv_cross () {
+    [ -d SPIRV-Cross ] || $gitclone https://github.com/KhronosGroup/SPIRV-Cross
+    builddir SPIRV-Cross
+    cmake .. "${cmake_args[@]}" \
+        -DSPIRV_CROSS_SHARED=ON -DSPIRV_CROSS_{CLI,STATIC}=OFF
+    makeplusinstall
+    popd
+}
+_spirv_cross_mark=lib/libspirv-cross-c-shared.dll.a
 
 _nv_headers () {
     [ -d nv-codec-headers ] || $gitclone https://github.com/FFmpeg/nv-codec-headers
@@ -226,6 +250,24 @@ _nv_headers () {
     popd
 }
 _nv_headers_mark=include/ffnvcodec/dynlink_loader.h
+
+_vulkan_headers () {
+    [ -d Vulkan-Headers ] || $gitclone https://github.com/KhronosGroup/Vulkan-Headers
+    builddir Vulkan-Headers
+    cmake .. "${cmake_args[@]}"
+    makeplusinstall
+    popd
+}
+_vulkan_headers_mark=include/vulkan/vulkan.h
+
+_vulkan_loader () {
+    [ -d Vulkan-Loader ] || $gitclone https://github.com/KhronosGroup/Vulkan-Loader
+    builddir Vulkan-Loader
+    cmake .. "${cmake_args[@]}" -DUSE_GAS=ON
+    makeplusinstall
+    popd
+}
+_vulkan_loader_mark=lib/libvulkan-1.dll.a
 
 _libplacebo () {
     [ -d libplacebo ] || $gitclone https://code.videolan.org/videolan/libplacebo.git
@@ -278,6 +320,11 @@ _libass () {
 }
 _libass_mark=lib/libass.dll.a
 
+_subrandr () {
+    build_subrandr "$prefix_dir" --target "$RUST_TARGET" -- -- -L"$prefix_dir"/lib
+}
+_subrandr_mark=lib/libsubrandr.dll.a
+
 _curl () {
     local ver=8.20.0
     gettar "https://curl.se/download/curl-${ver}.tar.xz"
@@ -289,12 +336,19 @@ _curl () {
 }
 _curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng amf-headers nv-headers dav1d; do
+for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d; do
     build_if_missing $x
 done
+if [[ "$TARGET" != "i686-"* ]]; then
+    build_if_missing vulkan-headers
+    build_if_missing vulkan-loader
+fi
 for x in ffmpeg libplacebo freetype fribidi harfbuzz libass curl; do
     build_if_missing $x
 done
+if [[ "$TARGET" != "i686-"* ]]; then
+    build_if_missing subrandr
+fi
 
 ## mpv
 
@@ -315,7 +369,7 @@ mpv_args=(
     -Djavascript=disabled
     -Dlua=disabled
     -Dlibmpv=true
-    -D{amf,d3d11,libcurl}=enabled
+    -D{amf,shaderc,spirv-cross,d3d11,libcurl}=enabled
 )
 
 cd mpv
@@ -344,11 +398,12 @@ if [ "$2" = pack ]; then
         # ffmpeg
         av*.dll sw*.dll postproc-[0-9]*.dll
         # everything else
-        lib{ass,freetype,fribidi,harfbuzz,iconv,placebo}-[0-9]*.dll
-        lib{curl,dav1d,zlib1}.dll
+        subrandr-[0-9]*.dll lib{ass,freetype,fribidi,harfbuzz,iconv,placebo}-[0-9]*.dll
+        lib{curl,shaderc_shared,spirv-cross-c-shared,dav1d,zlib1}.dll
         # mpv API
         libmpv-*.dll
     )
+    [[ -f vulkan-1.dll ]] && dlls+=(vulkan-1.dll)
     mv -v "${dlls[@]}" ..
     popd
     rm -rf artifact/tmp
