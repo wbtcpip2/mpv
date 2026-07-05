@@ -325,16 +325,16 @@ _subrandr () {
 }
 _subrandr_mark=lib/libsubrandr.dll.a
 
-_curl () {
-    local ver=8.20.0
-    gettar "https://curl.se/download/curl-${ver}.tar.xz"
-    builddir curl-${ver}
-    cmake .. "${cmake_args[@]}" \
-        -DCURL_{USE_SCHANNEL,ZLIB}=ON -DCURL_DISABLE_LDAP=ON -DCURL_USE_LIBPSL=OFF
-    makeplusinstall
-    popd
-}
-_curl_mark=lib/libcurl.dll.a
+#_curl () {
+#    local ver=8.20.0
+#    gettar "https://curl.se/download/curl-${ver}.tar.xz"
+#    builddir curl-${ver}
+#    cmake .. "${cmake_args[@]}" \
+#        -DCURL_{USE_SCHANNEL,ZLIB}=ON -DCURL_DISABLE_LDAP=ON -DCURL_USE_LIBPSL=OFF
+#    makeplusinstall
+#    popd
+#}
+#_curl_mark=lib/libcurl.dll.a
 
 for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d; do
     build_if_missing $x
@@ -343,7 +343,7 @@ if [[ "$TARGET" != "i686-"* ]]; then
     build_if_missing vulkan-headers
     build_if_missing vulkan-loader
 fi
-for x in ffmpeg libplacebo freetype fribidi harfbuzz libass curl; do
+for x in ffmpeg libplacebo freetype fribidi harfbuzz libass; do
     build_if_missing $x
 done
 if [[ "$TARGET" != "i686-"* ]]; then
@@ -369,7 +369,7 @@ mpv_args=(
     -Djavascript=disabled
     -Dlua=disabled
     -Dlibmpv=true
-    -D{amf,shaderc,spirv-cross,d3d11,libcurl}=enabled
+    -D{amf,shaderc,spirv-cross,d3d11}=enabled
 )
 
 cd mpv
@@ -399,7 +399,7 @@ if [ "$2" = pack ]; then
         av*.dll sw*.dll postproc-[0-9]*.dll
         # everything else
         subrandr-[0-9]*.dll lib{ass,freetype,fribidi,harfbuzz,iconv,placebo}-[0-9]*.dll
-        lib{curl,shaderc_shared,spirv-cross-c-shared,dav1d,zlib1}.dll
+        lib{shaderc_shared,spirv-cross-c-shared,dav1d,zlib1}.dll
         # mpv API
         libmpv-*.dll
     )
