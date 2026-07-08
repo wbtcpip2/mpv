@@ -181,9 +181,11 @@ _openssl () {
     gettar "https://github.com/openssl/openssl/archive/refs/tags/openssl-${ver}.tar.gz" openssl-openssl-${ver}
     builddir openssl-openssl-${ver}
 
-    # Disable ccache for OpenSSL (it breaks Configure)
-    export CC="$TARGET-gcc-posix"
-    export CXX="$TARGET-g++-posix"
+    # Disable ccache and set clean compiler names
+    export CC="${TARGET}-gcc-posix"
+    export CXX="${TARGET}-g++-posix"
+    export AR="${TARGET}-ar"
+    export RANLIB="${TARGET}-ranlib"
 
     ../Configure mingw \
         --cross-compile-prefix=$TARGET- \
@@ -194,8 +196,8 @@ _openssl () {
     make install DESTDIR="$prefix_dir"
 
     # Restore ccache for the rest of the build
-    export CC="ccache $TARGET-gcc-posix"
-    export CXX="ccache $TARGET-g++-posix"
+    export CC="ccache ${TARGET}-gcc-posix"
+    export CXX="ccache ${TARGET}-g++-posix"
 
     popd
 }
