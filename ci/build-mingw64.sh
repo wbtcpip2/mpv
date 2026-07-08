@@ -177,7 +177,7 @@ _dav1d () {
 _dav1d_mark=lib/libdav1d.dll.a
 
 _mbedtls () {
-    local ver=3.6.0
+    local ver=2.28.7
     gettar "https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v${ver}.tar.gz" mbedtls-${ver}
     builddir mbedtls-${ver}
     cmake .. "${cmake_args[@]}" \
@@ -187,7 +187,6 @@ _mbedtls () {
     popd
 }
 _mbedtls_mark=lib/libmbedtls.dll.a
-
 
 _srt () {
     local ver=1.5.3
