@@ -186,7 +186,7 @@ _mbedtls () {
     makeplusinstall
     popd
 }
-_mbedtls_mark=lib/libmbedtls.dll.a
+_mbedtls_mark=bin/libmbedtls.dll
 
 _srt () {
     local ver=1.5.3
