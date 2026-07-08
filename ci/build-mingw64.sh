@@ -182,11 +182,13 @@ _mbedtls () {
     builddir mbedtls-${ver}
     cmake .. "${cmake_args[@]}" \
         -DENABLE_TESTING=OFF \
-        -DENABLE_PROGRAMS=OFF
+        -DENABLE_PROGRAMS=OFF \
+        -DBUILD_SHARED_LIBS=OFF
     makeplusinstall
     popd
 }
-_mbedtls_mark=bin/libmbedtls.dll
+_mbedtls_mark=lib/libmbedtls.a
+
 
 _srt () {
     local ver=1.5.3
