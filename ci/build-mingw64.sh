@@ -177,15 +177,9 @@ _dav1d () {
 _dav1d_mark=lib/libdav1d.dll.a
 
 _openssl () {
-    local ver=3.3.1
-    gettar "https://github.com/openssl/openssl/archive/refs/tags/openssl-${ver}.tar.gz" openssl-openssl-${ver}
-    builddir openssl-openssl-${ver}
-
-    # Disable ccache and set clean compiler names
-    export CC="${TARGET}-gcc-posix"
-    export CXX="${TARGET}-g++-posix"
-    export AR="${TARGET}-ar"
-    export RANLIB="${TARGET}-ranlib"
+    local ver=1.1.1w
+    gettar "https://www.openssl.org/source/openssl-${ver}.tar.gz"
+    builddir openssl-${ver}
 
     ../Configure mingw \
         --cross-compile-prefix=$TARGET- \
@@ -194,16 +188,9 @@ _openssl () {
 
     make -j$(nproc)
     make install DESTDIR="$prefix_dir"
-
-    # Restore ccache for the rest of the build
-    export CC="ccache ${TARGET}-gcc-posix"
-    export CXX="ccache ${TARGET}-g++-posix"
-
     popd
 }
 _openssl_mark=lib/libssl.dll.a
-
-
 
 _srt () {
     local ver=1.5.3
