@@ -176,11 +176,30 @@ _dav1d () {
 }
 _dav1d_mark=lib/libdav1d.dll.a
 
+_openssl () {
+    local ver=3.3.1
+    gettar "https://github.com/openssl/openssl/archive/refs/tags/openssl-${ver}.tar.gz" openssl-${ver}
+    builddir openssl-${ver}
+
+    # OpenSSL build for MinGW
+    ../Configure mingw64 \
+        --cross-compile-prefix=$TARGET- \
+        --prefix="$prefix_dir" \
+        shared no-tests
+
+    make -j$(nproc)
+    make install DESTDIR="$prefix_dir"
+    popd
+}
+_openssl_mark=lib/libssl.dll.a
+
+
 _srt () {
     local ver=1.5.3
     gettar "https://github.com/Haivision/srt/archive/refs/tags/v${ver}.tar.gz" srt-${ver}
     builddir srt-${ver}
     cmake .. "${cmake_args[@]}" \
+        -DCMAKE_PREFIX_PATH="$prefix_dir" \
         -DENABLE_SHARED=ON \
         -DENABLE_STATIC=ON \
         -DENABLE_APPS=OFF \
@@ -189,6 +208,7 @@ _srt () {
     popd
 }
 _srt_mark=lib/libsrt.dll.a
+
 
 #_lcms2 () {
 #    [ -d lcms2 ] || $gitclone https://github.com/mm2/Little-CMS.git lcms2
