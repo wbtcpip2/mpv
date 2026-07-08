@@ -373,7 +373,7 @@ _subrandr_mark=lib/libsubrandr.dll.a
 #}
 #_curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d srt; do
+for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d openssl srt; do
     build_if_missing $x
 done
 if [[ "$TARGET" != "i686-"* ]]; then
