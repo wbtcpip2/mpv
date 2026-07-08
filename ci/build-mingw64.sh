@@ -179,10 +179,9 @@ _dav1d_mark=lib/libdav1d.dll.a
 _openssl () {
     local ver=3.3.1
     gettar "https://github.com/openssl/openssl/archive/refs/tags/openssl-${ver}.tar.gz" openssl-openssl-${ver}
-    builddir openssl-${ver}
+    builddir openssl-openssl-${ver}
 
-    # OpenSSL build for MinGW
-    ../Configure mingw64 \
+    ../Configure mingw \
         --cross-compile-prefix=$TARGET- \
         --prefix="$prefix_dir" \
         shared no-tests
