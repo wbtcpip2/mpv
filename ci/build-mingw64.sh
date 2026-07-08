@@ -206,9 +206,6 @@ _ffmpeg () {
         --disable-{doc,programs}
         --enable-muxer=spdif --enable-encoder=mjpeg,png --enable-libdav1d
 
-        --enable-libsrt
-        --enable-protocol=srt
-
         --disable-cuda
         --disable-cuvid
         --disable-nvenc
