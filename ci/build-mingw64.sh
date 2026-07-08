@@ -176,56 +176,6 @@ _dav1d () {
 }
 _dav1d_mark=lib/libdav1d.dll.a
 
-_mbedtls () {
-    local ver=2.28.7
-    gettar "https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v${ver}.tar.gz" mbedtls-${ver}
-    builddir mbedtls-${ver}
-    cmake .. "${cmake_args[@]}" \
-        -DENABLE_TESTING=OFF \
-        -DENABLE_PROGRAMS=OFF \
-        -DBUILD_SHARED_LIBS=OFF
-    makeplusinstall
-    popd
-}
-_mbedtls_mark=lib/libmbedtls.a
-
-_mbedtls_pc () {
-    mkdir -p "$prefix_dir/lib/pkgconfig"
-
-    cat > "$prefix_dir/lib/pkgconfig/mbedtls.pc" <<EOF
-prefix=$prefix_dir
-exec_prefix=\${prefix}
-libdir=\${prefix}/lib
-includedir=\${prefix}/include
-
-Name: mbedtls
-Description: MbedTLS SSL library
-Version: 2.28.7
-Libs: -L\${libdir} -lmbedtls -lmbedcrypto -lmbedx509
-Cflags: -I\${includedir}
-EOF
-}
-_mbedtls_pc_mark=lib/pkgconfig/mbedtls.pc
-
-
-_srt () {
-    local ver=1.5.3
-    gettar "https://github.com/Haivision/srt/archive/refs/tags/v${ver}.tar.gz" srt-${ver}
-    builddir srt-${ver}
-    cmake .. "${cmake_args[@]}" \
-        -DCMAKE_PREFIX_PATH="$prefix_dir" \
-        -DENABLE_SHARED=ON \
-        -DENABLE_STATIC=ON \
-        -DENABLE_APPS=OFF \
-        -DENABLE_TESTING=OFF \
-        -DENABLE_MBEDTLS=ON \
-        -DENABLE_OPENSSL=OFF
-    makeplusinstall
-    popd
-}
-_srt_mark=lib/libsrt.dll.a
-
-
 #_lcms2 () {
 #    [ -d lcms2 ] || $gitclone https://github.com/mm2/Little-CMS.git lcms2
 #    builddir lcms2
@@ -389,7 +339,7 @@ _subrandr_mark=lib/libsubrandr.dll.a
 #}
 #_curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d mbedtls mbedtls_pc srt; do
+for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d; do
     build_if_missing $x
 done
 if [[ "$TARGET" != "i686-"* ]]; then
