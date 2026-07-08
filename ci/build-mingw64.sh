@@ -176,22 +176,6 @@ _dav1d () {
 }
 _dav1d_mark=lib/libdav1d.dll.a
 
-_openssl () {
-    local ver=1.1.1w
-    gettar "https://www.openssl.org/source/openssl-${ver}.tar.gz"
-    builddir openssl-${ver}
-
-    ../Configure mingw \
-        --cross-compile-prefix=$TARGET- \
-        --prefix="$prefix_dir" \
-        shared no-tests
-
-    make -j$(nproc)
-    make install DESTDIR="$prefix_dir"
-    popd
-}
-_openssl_mark=lib/libssl.dll.a
-
 _srt () {
     local ver=1.5.3
     gettar "https://github.com/Haivision/srt/archive/refs/tags/v${ver}.tar.gz" srt-${ver}
@@ -201,7 +185,9 @@ _srt () {
         -DENABLE_SHARED=ON \
         -DENABLE_STATIC=ON \
         -DENABLE_APPS=OFF \
-        -DENABLE_TESTING=OFF
+        -DENABLE_TESTING=OFF \
+        -DENABLE_MBEDTLS=ON \
+        -DENABLE_OPENSSL=OFF
     makeplusinstall
     popd
 }
@@ -371,7 +357,7 @@ _subrandr_mark=lib/libsubrandr.dll.a
 #}
 #_curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d openssl srt; do
+for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d srt; do
     build_if_missing $x
 done
 if [[ "$TARGET" != "i686-"* ]]; then
