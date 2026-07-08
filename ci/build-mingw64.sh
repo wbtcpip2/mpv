@@ -176,6 +176,19 @@ _dav1d () {
 }
 _dav1d_mark=lib/libdav1d.dll.a
 
+_mbedtls () {
+    local ver=3.6.0
+    gettar "https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v${ver}.tar.gz" mbedtls-${ver}
+    builddir mbedtls-${ver}
+    cmake .. "${cmake_args[@]}" \
+        -DENABLE_TESTING=OFF \
+        -DENABLE_PROGRAMS=OFF
+    makeplusinstall
+    popd
+}
+_mbedtls_mark=lib/libmbedtls.dll.a
+
+
 _srt () {
     local ver=1.5.3
     gettar "https://github.com/Haivision/srt/archive/refs/tags/v${ver}.tar.gz" srt-${ver}
@@ -357,7 +370,7 @@ _subrandr_mark=lib/libsubrandr.dll.a
 #}
 #_curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d srt; do
+for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d mbedtls srt; do
     build_if_missing $x
 done
 if [[ "$TARGET" != "i686-"* ]]; then
