@@ -220,28 +220,28 @@ _ffmpeg () {
 }
 _ffmpeg_mark=lib/libavcodec.dll.a
 
-_shaderc () {
-    if [ ! -d shaderc ]; then
-        $gitclone https://github.com/google/shaderc.git
-        (cd shaderc && ./utils/git-sync-deps)
-    fi
-    builddir shaderc
-    cmake .. "${cmake_args[@]}" \
-        -DBUILD_SHARED_LIBS=OFF -DSHADERC_SKIP_TESTS=ON
-    makeplusinstall
-    popd
-}
-_shaderc_mark=lib/libshaderc_shared.dll.a
+#_shaderc () {
+#    if [ ! -d shaderc ]; then
+#        $gitclone https://github.com/google/shaderc.git
+#        (cd shaderc && ./utils/git-sync-deps)
+#    fi
+#    builddir shaderc
+#    cmake .. "${cmake_args[@]}" \
+#        -DBUILD_SHARED_LIBS=OFF -DSHADERC_SKIP_TESTS=ON
+#    makeplusinstall
+#    popd
+#}
+#_shaderc_mark=lib/libshaderc_shared.dll.a
 
-_spirv_cross () {
-    [ -d SPIRV-Cross ] || $gitclone https://github.com/KhronosGroup/SPIRV-Cross
-    builddir SPIRV-Cross
-    cmake .. "${cmake_args[@]}" \
-        -DSPIRV_CROSS_SHARED=ON -DSPIRV_CROSS_{CLI,STATIC}=OFF
-    makeplusinstall
-    popd
-}
-_spirv_cross_mark=lib/libspirv-cross-c-shared.dll.a
+#_spirv_cross () {
+#    [ -d SPIRV-Cross ] || $gitclone https://github.com/KhronosGroup/SPIRV-Cross
+#    builddir SPIRV-Cross
+#    cmake .. "${cmake_args[@]}" \
+#        -DSPIRV_CROSS_SHARED=ON -DSPIRV_CROSS_{CLI,STATIC}=OFF
+#    makeplusinstall
+#    popd
+#}
+#_spirv_cross_mark=lib/libspirv-cross-c-shared.dll.a
 
 _nv_headers () {
     [ -d nv-codec-headers ] || $gitclone https://github.com/FFmpeg/nv-codec-headers
