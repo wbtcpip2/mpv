@@ -233,15 +233,15 @@ _ffmpeg_mark=lib/libavcodec.dll.a
 #}
 #_shaderc_mark=lib/libshaderc_shared.dll.a
 
-#_spirv_cross () {
-#    [ -d SPIRV-Cross ] || $gitclone https://github.com/KhronosGroup/SPIRV-Cross
-#    builddir SPIRV-Cross
-#    cmake .. "${cmake_args[@]}" \
-#        -DSPIRV_CROSS_SHARED=ON -DSPIRV_CROSS_{CLI,STATIC}=OFF
-#    makeplusinstall
-#    popd
-#}
-#_spirv_cross_mark=lib/libspirv-cross-c-shared.dll.a
+_spirv_cross () {
+    [ -d SPIRV-Cross ] || $gitclone https://github.com/KhronosGroup/SPIRV-Cross
+    builddir SPIRV-Cross
+    cmake .. "${cmake_args[@]}" \
+        -DSPIRV_CROSS_SHARED=ON -DSPIRV_CROSS_{CLI,STATIC}=OFF
+    makeplusinstall
+    popd
+}
+_spirv_cross_mark=lib/libspirv-cross-c-shared.dll.a
 
 _nv_headers () {
     [ -d nv-codec-headers ] || $gitclone https://github.com/FFmpeg/nv-codec-headers
@@ -336,7 +336,7 @@ _subrandr_mark=lib/libsubrandr.dll.a
 #}
 #_curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng amf-headers nv-headers dav1d; do
+for x in iconv zlib-ng spirv-cross amf-headers nv-headers dav1d; do
     build_if_missing $x
 done
 #if [[ "$TARGET" != "i686-"* ]]; then
