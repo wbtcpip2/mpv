@@ -213,25 +213,25 @@ _ffmpeg () {
         --disable-libnpp
         --disable-filter=scale_cuda
     )
-    #pkg-config vulkan && args+=(--enable-vulkan)
+    pkg-config vulkan && args+=(--enable-vulkan)
     ../configure "${args[@]}"
     makeplusinstall
     popd
 }
 _ffmpeg_mark=lib/libavcodec.dll.a
 
-#_shaderc () {
-#    if [ ! -d shaderc ]; then
-#        $gitclone https://github.com/google/shaderc.git
-#        (cd shaderc && ./utils/git-sync-deps)
-#    fi
-#    builddir shaderc
-#    cmake .. "${cmake_args[@]}" \
-#        -DBUILD_SHARED_LIBS=OFF -DSHADERC_SKIP_TESTS=ON
-#    makeplusinstall
-#    popd
-#}
-#_shaderc_mark=lib/libshaderc_shared.dll.a
+_shaderc () {
+    if [ ! -d shaderc ]; then
+        $gitclone https://github.com/google/shaderc.git
+        (cd shaderc && ./utils/git-sync-deps)
+    fi
+    builddir shaderc
+    cmake .. "${cmake_args[@]}" \
+        -DBUILD_SHARED_LIBS=OFF -DSHADERC_SKIP_TESTS=ON
+    makeplusinstall
+    popd
+}
+_shaderc_mark=lib/libshaderc_shared.dll.a
 
 _spirv_cross () {
     [ -d SPIRV-Cross ] || $gitclone https://github.com/KhronosGroup/SPIRV-Cross
@@ -251,29 +251,29 @@ _nv_headers () {
 }
 _nv_headers_mark=include/ffnvcodec/dynlink_loader.h
 
-#_vulkan_headers () {
-#    [ -d Vulkan-Headers ] || $gitclone https://github.com/KhronosGroup/Vulkan-Headers
-#    builddir Vulkan-Headers
-#    cmake .. "${cmake_args[@]}"
-#    makeplusinstall
-#    popd
-#}
-#_vulkan_headers_mark=include/vulkan/vulkan.h
+_vulkan_headers () {
+    [ -d Vulkan-Headers ] || $gitclone https://github.com/KhronosGroup/Vulkan-Headers
+    builddir Vulkan-Headers
+    cmake .. "${cmake_args[@]}"
+    makeplusinstall
+    popd
+}
+_vulkan_headers_mark=include/vulkan/vulkan.h
 
-#_vulkan_loader () {
-#    [ -d Vulkan-Loader ] || $gitclone https://github.com/KhronosGroup/Vulkan-Loader
-#    builddir Vulkan-Loader
-#    cmake .. "${cmake_args[@]}" -DUSE_GAS=ON
-#    makeplusinstall
-#    popd
-#}
-#_vulkan_loader_mark=lib/libvulkan-1.dll.a
+_vulkan_loader () {
+    [ -d Vulkan-Loader ] || $gitclone https://github.com/KhronosGroup/Vulkan-Loader
+    builddir Vulkan-Loader
+    cmake .. "${cmake_args[@]}" -DUSE_GAS=ON
+    makeplusinstall
+    popd
+}
+_vulkan_loader_mark=lib/libvulkan-1.dll.a
 
 _libplacebo () {
     [ -d libplacebo ] || $gitclone https://code.videolan.org/videolan/libplacebo.git
     builddir libplacebo
     meson setup .. --cross-file "$prefix_dir/crossfile" \
-        -Ddemos=false -D{opengl,d3d11}=enabled -Dvulkan=disabled -Dspirv-cross=enabled -Dlcms=disabled
+        -Ddemos=false -D{opengl,d3d11}=enabled -Dlcms=disabled
     makeplusinstall
     popd
 }
@@ -336,13 +336,13 @@ _subrandr_mark=lib/libsubrandr.dll.a
 #}
 #_curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng spirv-cross amf-headers nv-headers dav1d; do
+for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d; do
     build_if_missing $x
 done
-#if [[ "$TARGET" != "i686-"* ]]; then
-#    build_if_missing vulkan-headers
-#    build_if_missing vulkan-loader
-#fi
+if [[ "$TARGET" != "i686-"* ]]; then
+    build_if_missing vulkan-headers
+    build_if_missing vulkan-loader
+fi
 for x in ffmpeg libplacebo freetype fribidi harfbuzz libass; do
     build_if_missing $x
 done
@@ -369,11 +369,7 @@ mpv_args=(
     -Djavascript=disabled
     -Dlua=disabled
     -Dlibmpv=true
-    -Dd3d11=enabled
-    -Dvulkan=disabled
-    -Dshaderc=disabled
-    -Dspirv-cross=enabled
-    #-D{amf,shaderc,spirv-cross,d3d11}=enabled
+    -D{amf,shaderc,spirv-cross,d3d11}=enabled
 )
 
 cd mpv
