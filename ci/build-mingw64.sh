@@ -213,7 +213,7 @@ _ffmpeg () {
         --disable-libnpp
         --disable-filter=scale_cuda
     )
-    pkg-config vulkan && args+=(--enable-vulkan --enable-libshaderc)
+    pkg-config vulkan && args+=(--enable-vulkan)
     ../configure "${args[@]}"
     makeplusinstall
     popd
