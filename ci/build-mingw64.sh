@@ -213,7 +213,7 @@ _ffmpeg () {
         --disable-libnpp
         --disable-filter=scale_cuda
     )
-    pkg-config vulkan && args+=(--enable-vulkan)
+    #pkg-config vulkan && args+=(--enable-vulkan)
     ../configure "${args[@]}"
     makeplusinstall
     popd
@@ -251,23 +251,23 @@ _nv_headers () {
 }
 _nv_headers_mark=include/ffnvcodec/dynlink_loader.h
 
-_vulkan_headers () {
-    [ -d Vulkan-Headers ] || $gitclone https://github.com/KhronosGroup/Vulkan-Headers
-    builddir Vulkan-Headers
-    cmake .. "${cmake_args[@]}"
-    makeplusinstall
-    popd
-}
-_vulkan_headers_mark=include/vulkan/vulkan.h
+#_vulkan_headers () {
+#    [ -d Vulkan-Headers ] || $gitclone https://github.com/KhronosGroup/Vulkan-Headers
+#    builddir Vulkan-Headers
+#    cmake .. "${cmake_args[@]}"
+#    makeplusinstall
+#    popd
+#}
+#_vulkan_headers_mark=include/vulkan/vulkan.h
 
-_vulkan_loader () {
-    [ -d Vulkan-Loader ] || $gitclone https://github.com/KhronosGroup/Vulkan-Loader
-    builddir Vulkan-Loader
-    cmake .. "${cmake_args[@]}" -DUSE_GAS=ON
-    makeplusinstall
-    popd
-}
-_vulkan_loader_mark=lib/libvulkan-1.dll.a
+#_vulkan_loader () {
+#    [ -d Vulkan-Loader ] || $gitclone https://github.com/KhronosGroup/Vulkan-Loader
+#    builddir Vulkan-Loader
+#    cmake .. "${cmake_args[@]}" -DUSE_GAS=ON
+#    makeplusinstall
+#    popd
+#}
+#_vulkan_loader_mark=lib/libvulkan-1.dll.a
 
 _libplacebo () {
     [ -d libplacebo ] || $gitclone https://code.videolan.org/videolan/libplacebo.git
@@ -336,13 +336,13 @@ _subrandr_mark=lib/libsubrandr.dll.a
 #}
 #_curl_mark=lib/libcurl.dll.a
 
-for x in iconv zlib-ng shaderc spirv-cross amf-headers nv-headers dav1d; do
+for x in iconv zlib-ng amf-headers nv-headers dav1d; do
     build_if_missing $x
 done
-if [[ "$TARGET" != "i686-"* ]]; then
-    build_if_missing vulkan-headers
-    build_if_missing vulkan-loader
-fi
+#if [[ "$TARGET" != "i686-"* ]]; then
+#    build_if_missing vulkan-headers
+#    build_if_missing vulkan-loader
+#fi
 for x in ffmpeg libplacebo freetype fribidi harfbuzz libass; do
     build_if_missing $x
 done
@@ -369,7 +369,11 @@ mpv_args=(
     -Djavascript=disabled
     -Dlua=disabled
     -Dlibmpv=true
-    -D{amf,shaderc,spirv-cross,d3d11}=enabled
+    -Dd3d11=enabled
+    -Dvulkan=disabled
+    -Dshaderc=disabled
+    -Dspirv-cross=disabled
+    #-D{amf,shaderc,spirv-cross,d3d11}=enabled
 )
 
 cd mpv
