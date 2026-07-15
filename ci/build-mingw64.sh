@@ -372,7 +372,7 @@ mpv_args=(
     -Dd3d11=enabled
     -Dvulkan=disabled
     -Dshaderc=disabled
-    -Dspirv-cross=disabled
+    -Dspirv-cross=enabled
     #-D{amf,shaderc,spirv-cross,d3d11}=enabled
 )
 
