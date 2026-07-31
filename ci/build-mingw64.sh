@@ -146,7 +146,7 @@ function build_if_missing {
 
 _iconv () {
     local ver=1.19
-    gettar "https://ftpmirror.gnu.org/gnu/libiconv/libiconv-${ver}.tar.gz"
+    gettar "https://ftpmirror.gnu.org/gnu/libiconv/libiconv-${ver}.tar.gz" || gettar "https://sourceforge.net/projects/libiconv/files/libiconv-${ver}.tar.gz"
     builddir libiconv-${ver}
     ../configure --host=$TARGET $at_flags
     makeplusinstall
@@ -281,7 +281,7 @@ _libplacebo_mark=lib/libplacebo.dll.a
 
 _freetype () {
     local ver=2.14.3
-    gettar "https://download.savannah.gnu.org/releases/freetype/freetype-${ver}.tar.xz"
+    gettar "https://download.savannah.gnu.org/releases/freetype/freetype-${ver}.tar.xz" || gettar "https://sourceforge.net/projects/freetype/files/freetype2/${ver}/freetype-${ver}.tar.xz"
     builddir freetype-${ver}
     meson setup .. --cross-file "$prefix_dir/crossfile"
     makeplusinstall
