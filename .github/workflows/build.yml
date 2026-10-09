@@ -58,7 +58,31 @@ jobs:
           """)
           print(Path("mpv/player/lua/meson.build").read_text())
           PY
-      
+      - name: Patch lua.c for ytdl only
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path("mpv/player/lua.c")
+          txt = p.read_text()
+          start = txt.index("static const char * const builtin_lua_scripts[][2] = {")
+          end = txt.index("{0}\n};", start)
+          replacement = r'''static const char * const builtin_lua_scripts[][2] = {
+          {"mp.defaults",
+          #   include "player/lua/defaults.lua.inc"
+          },
+          {"mp.options",
+          #   include "player/lua/options.lua.inc"
+          },
+          {"@ytdl_hook.lua",
+          #   include "player/lua/ytdl_hook.lua.inc"
+          },
+          {0}
+          };
+          '''
+          txt = txt[:start] + replacement + txt[end + len("{0}\n};"):]
+          p.write_text(txt)
+          print("lua.c patched")
+          PY
       - name: Get time
         id: get_time
         run: echo "timestamp=`date +%s%N`" >> $GITHUB_OUTPUT
