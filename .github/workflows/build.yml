@@ -47,7 +47,7 @@ jobs:
         run: echo "timestamp=`date +%s%N`" >> $GITHUB_OUTPUT
 
       - name: Restore cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ env.TARGET }}-${{ steps.get_time.outputs.timestamp }}
@@ -58,7 +58,7 @@ jobs:
           rustup target add ${{ env.RUST_TARGET }}
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y ccache g++-mingw-w64 python3-pip nasm ninja-build pkgconf
+          sudo apt-get install --no-install-recommends -y ccache g++-mingw-w64 gcc-multilib python3-pip nasm ninja-build pkgconf ${{ matrix.wine }} wine
           python -m pip install meson
 
       - name: Install Meson Wraps
@@ -81,6 +81,22 @@ jobs:
         run: |
           cat ./mingw_build/meson-logs/meson-log.txt
 
+      - name: Functional test
+        run: |
+          cd artifact && wine ./mpv.com -v --no-config
+        env:
+          WINEDEBUG: '+loaddll'
+
+      - name: Run meson tests
+        id: tests
+        run: |
+          meson test -C mingw_build
+
+      - name: Print meson test log
+        if: ${{ failure() && steps.tests.outcome == 'failure' }}
+        run: |
+          cat ./mingw_build/meson-logs/testlog.txt
+
       - name: Artifact name
         id: artifact
         run: |
@@ -95,7 +111,7 @@ jobs:
           path: artifact/*
 
       - name: Save Cache
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         if: always()
         with:
           path: ${{ env.CCACHE_DIR }}
