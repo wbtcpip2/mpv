@@ -42,18 +42,21 @@ jobs:
           git clone https://github.com/mpv-player/mpv.git --recursive
           cd mpv
           git fetch --tags
-      - name: Keep only ytdl lua scripts
+      - name: Patch lua scripts
         run: |
-          python3 << 'PY'
+          python3 <<'PY'
           from pathlib import Path
           p = Path("mpv/player/lua/meson.build")
-          s = p.read_text()
-          old = """lua_files = ['defaults.lua', 'assdraw.lua', 'options.lua', 'osc.lua',
+          txt = p.read_text()
+          txt = txt.replace(
+          """lua_files = ['defaults.lua', 'assdraw.lua', 'options.lua', 'osc.lua',
              'ytdl_hook.lua', 'stats.lua', 'console.lua', 'auto_profiles.lua',
              'input.lua', 'fzy.lua', 'select.lua', 'positioning.lua',
-             'commands.lua', 'context_menu.lua']"""
-          new = """lua_files = ['defaults.lua', 'options.lua', 'ytdl_hook.lua']"""
-          p.write_text(s.replace(old, new))
+             'commands.lua', 'context_menu.lua']""",
+          """lua_files = ['defaults.lua', 'options.lua', 'ytdl_hook.lua']"""
+          )
+          p.write_text(txt)
+          print("PATCED:")
           print(p.read_text())
           PY
       
