@@ -322,6 +322,23 @@ _libass () {
 }
 _libass_mark=lib/libass.dll.a
 
+_luajit () {
+    [ -d LuaJIT ] || $gitclone https://github.com/LuaJIT/LuaJIT.git
+    pushd LuaJIT
+    local hostcc="ccache cc"
+    local flags=
+    if [[ "$TARGET" == "i686-"* ]]; then
+        hostcc="$hostcc -m32"
+        flags=XCFLAGS=-DLUAJIT_NO_UNWIND
+    fi
+    make TARGET_SYS=Windows clean
+    make TARGET_SYS=Windows HOST_CC="$hostcc" CROSS="ccache $TARGET-" \
+        BUILDMODE=static $flags amalg
+    make DESTDIR="$prefix_dir" INSTALL_DEP= FILE_T=luajit.exe install
+    popd
+}
+_luajit_mark=lib/libluajit-5.1.a
+
 _subrandr () {
     build_subrandr "$prefix_dir" --target "$RUST_TARGET" -- -- -L"$prefix_dir"/lib
 }
@@ -345,7 +362,7 @@ if [[ "$TARGET" != "i686-"* ]]; then
     build_if_missing vulkan-headers
     build_if_missing vulkan-loader
 fi
-for x in ffmpeg libplacebo freetype fribidi harfbuzz libass; do
+for x in ffmpeg libplacebo freetype fribidi harfbuzz libass luajit; do
     build_if_missing $x
 done
 if [[ "$TARGET" != "i686-"* ]]; then
@@ -371,6 +388,7 @@ mpv_args=(
     -Djavascript=disabled
     -Dlua=enabled
     -Dlibmpv=true
+    -Dlua=luajit
     -D{amf,shaderc,spirv-cross,d3d11}=enabled
 )
 
