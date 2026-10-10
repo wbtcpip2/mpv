@@ -42,41 +42,9 @@ jobs:
           git clone https://github.com/mpv-player/mpv.git --recursive
           cd mpv
           git fetch --tags
-      - name: Disable unwanted builtin lua scripts
+      - name: Replace scripting.c
         run: |
-          cat > mpv/player/lua/auto_profiles.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/select.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/positioning.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/commands.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/stats.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/console.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/osc.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/context_menu.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/assdraw.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/input.lua <<'EOF'
-          -- disabled
-          EOF
-          cat > mpv/player/lua/fzy.lua <<'EOF'
-          -- disabled
-          EOF
+          cp player/scripting.c mpv/player/scripting.c
       - name: Get time
         id: get_time
         run: echo "timestamp=`date +%s%N`" >> $GITHUB_OUTPUT
