@@ -400,9 +400,7 @@ cd ..
 
 if [ "$2" = pack ]; then
     mkdir -p artifact/tmp
-    echo "Copying:"
-    cp -pv etc/mpv-*.bat artifact/
-
+        
     echo "Adding DLLs:"
     # grab everything we can get our hands on
     cp -v $build/libmpv-*.dll artifact/tmp/
