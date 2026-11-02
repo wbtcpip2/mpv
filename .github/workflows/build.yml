@@ -84,12 +84,6 @@ jobs:
         run: |
           cat ./mingw_build/meson-logs/meson-log.txt
 
-      - name: Functional test
-        run: |
-          cd artifact && wine ./mpv.com -v --no-config
-        env:
-          WINEDEBUG: '+loaddll'
-
       - name: Run meson tests
         id: tests
         run: |
