@@ -386,8 +386,10 @@ mpv_args=(
     --cross-file "$prefix_dir/crossfile" $common_args
     --buildtype debugoptimized
     -Djavascript=disabled
+    -Dcplayer=false
     -Dlibmpv=true
     -Dlua=luajit
+    -Dwasapi=disabled
     -D{amf,shaderc,spirv-cross,d3d11}=enabled
 )
 
