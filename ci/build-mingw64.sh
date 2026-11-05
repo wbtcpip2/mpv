@@ -388,6 +388,7 @@ mpv_args=(
     -Djavascript=disabled
     -Dcplayer=false
     -Dlibmpv=true
+    -Dtests=false
     -Dlua=luajit
     -Dwasapi=disabled
     -D{amf,shaderc,spirv-cross,d3d11}=enabled
